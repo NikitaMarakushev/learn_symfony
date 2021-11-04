@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=CommentRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  */
 class Comment
 {
@@ -148,6 +149,16 @@ class Comment
         $this->createdAt = $createdAt;
 
         return $this;
+    }
+
+    /**
+     * Undocumented function
+     * @ORM\PrePersist
+     * @return void
+     */
+    public function setCreatedAtValue()
+    {
+        $this->createdAt = new \DateTime();
     }
 
     /**
