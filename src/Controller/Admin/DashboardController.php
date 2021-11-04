@@ -23,12 +23,22 @@ class DashboardController extends AbstractDashboardController
         return $this->redirect($url);
     }
 
+    /**
+     * Configures Dashboard
+     *
+     * @return Dashboard
+     */
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
             ->setTitle('Guestbook');
     }
 
+    /**
+     * configures Menu Items
+     *
+     * @return iterable
+     */
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linktoRoute('Back to the website', 'fas fa-home', 'homepage');

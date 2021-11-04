@@ -39,21 +39,40 @@ class Conference
      */
     private $comments;
 
+    /**
+     * Conference entity constructor
+     */
     public function __construct()
     {
         $this->comments = new ArrayCollection();
     }
 
+    /**
+     * Undocumented function
+     *
+     * @return integer|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @return string|null
+     */
     public function getCity(): ?string
     {
         return $this->city;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param string $city
+     * @return self
+     */
     public function setCity(string $city): self
     {
         $this->city = $city;
@@ -61,11 +80,22 @@ class Conference
         return $this;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @return string|null
+     */
     public function getYear(): ?string
     {
         return $this->year;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param string $year
+     * @return self
+     */
     public function setYear(string $year): self
     {
         $this->year = $year;
@@ -73,11 +103,22 @@ class Conference
         return $this;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @return boolean|null
+     */
     public function getIsinternational(): ?bool
     {
         return $this->isinternational;
     }
 
+    /**
+     * setIsInterantiona function
+     *
+     * @param boolean $isinternational
+     * @return self
+     */
     public function setIsinternational(bool $isinternational): self
     {
         $this->isinternational = $isinternational;
@@ -93,6 +134,12 @@ class Conference
         return $this->comments;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param Comment $comment
+     * @return self
+     */
     public function addComment(Comment $comment): self
     {
         if (!$this->comments->contains($comment)) {
@@ -103,6 +150,12 @@ class Conference
         return $this;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param Comment $comment
+     * @return self
+     */
     public function removeComment(Comment $comment): self
     {
         if ($this->comments->removeElement($comment)) {
@@ -115,6 +168,11 @@ class Conference
         return $this;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @return string
+     */
     public function __toString(): string
     {
         return $this->city.' '.$this->year;
