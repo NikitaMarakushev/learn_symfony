@@ -1,0 +1,50 @@
+{
+    "dama/doctrine-test-bundle": {
+        "version": "6.6",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "4.0",
+            "ref": "56eaa387b5e48ebcc7c95a893b47dfa1ad51449c"
+        },
+        "files": [
+            "./config/packages/test/dama_doctrine_test_bundle.yaml"
+        ]
+    },
+    "php-webdriver/webdriver": {
+        "version": "1.12.0"
+    },
+    "symfony/amqp-messenger": {
+        "version": "v5.2.12"
+    },
+    "symfony/doctrine-messenger": {
+        "version": "v5.2.12"
+    },
+    "symfony/messenger": {
+        "version": "5.2",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "4.3",
+            "ref": "25e3c964d3aee480b3acc3114ffb7940c89edfed"
+        },
+        "files": [
+            "./config/packages/messenger.yaml"
+        ]
+    },
+    "symfony/panther": {
+        "version": "1.1",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.0",
+            "ref": "877d853a05c6713665a2f4b954734592680abff6"
+        }
+    },
+    "symfony/process": {
+        "version": "v5.2.12"
+    },
+    "symfony/redis-messenger": {
+        "version": "v5.2.12"
+    }
+}
