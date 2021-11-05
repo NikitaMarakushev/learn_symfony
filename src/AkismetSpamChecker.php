@@ -1,9 +1,11 @@
 <?php
 
+namespace App;
+
 use App\Entity\Comment;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class SpamChecker
+class AkismetSpamChecker
 {
     private $client;
 
@@ -24,9 +26,9 @@ class SpamChecker
      */
     public function getSpamScore(Comment $comment, array $context): int
     {
-        $response = new $this->client->request('POST', $this->endpoint, [
+        $response = $this->client->request('POST', $this->endpoint, [
             'body' => array_merge($context, [
-                'blog' => $_SERVER['APP_ENV'],
+                'blog' => 'https://guestbook.example.com',
                 'comment_type' => 'comment',
                 'comment_author' => $comment->getAuthor(),
                 'comment_author_email' => $comment->getEmail(),

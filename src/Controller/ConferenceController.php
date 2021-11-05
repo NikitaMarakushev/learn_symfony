@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\SpamChecker;
+use App\AkismetSpamChecker;
 use App\Entity\Comment;
 use Twig\Environment;
 use App\Entity\Conference;
@@ -41,7 +41,7 @@ class ConferenceController extends AbstractController
         Conference $conference,
         CommentRepository $commentRepository,
         ConferenceRepository $conferenceRepository,
-        SpamChecker $spamChecker,
+        AkismetSpamChecker $spamChecker,
         string $photoDir
         ): Response
     {
@@ -71,7 +71,7 @@ class ConferenceController extends AbstractController
             if (2 === $spamChecker->getSpamScore($comment, $context)) {
                 throw new \RuntimeException('Blatant spam, go away!');
             }
-            
+
             $this->entityManager->flush();
 
             return $this->redirectToRoute('conference', ['slug' => $conference->getSlug()]);
