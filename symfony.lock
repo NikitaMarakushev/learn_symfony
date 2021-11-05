@@ -1,4 +1,7 @@
 {
+    "symfony/http-client": {
+        "version": "v5.2.12"
+    },
     "symfony/mime": {
         "version": "v5.2.12"
     },
