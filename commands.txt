@@ -1,2 +1,8 @@
 1) show project workflow
 - symfony console workflow:dump comment | dot -Tpng -o workflow.png
+
+2) cleans database:
+- symfony console app:comment:cleanup
+
+3) force run CLI command:
+- symfony cron comment_cleanup
