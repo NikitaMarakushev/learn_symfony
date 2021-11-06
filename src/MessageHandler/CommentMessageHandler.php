@@ -8,10 +8,10 @@ use Psr\Log\LoggerInterface;
 use App\Message\CommentMessage;
 use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Bridge\Twig\Mime\NotificationEmail;
+use Symfony\Component\Notifier\NotifierInterface;
 use Symfony\Component\Workflow\WorkflowInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
+use App\Notification\CommentReviewNotification;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 class CommentMessageHandler implements MessageHandlerInterface {
@@ -28,9 +28,7 @@ class CommentMessageHandler implements MessageHandlerInterface {
 
     private $logger;
 
-    private $mailer;
-
-    private $adminEmail;
+    private $notifier;
 
     private $imageOptimizer;
 
@@ -42,9 +40,8 @@ class CommentMessageHandler implements MessageHandlerInterface {
         CommentRepository $commentRepository,
         MessageBusInterface $bus,
         WorkflowInterface $commentStateMachine,
-        MailerInterface $mailer,
+        NotifierInterface $notifier,
         ImageOptimizer $imageOptimizer,
-        string $adminEmail,
         string $photoDir,
         LoggerInterface $logger = null
     ) {
@@ -53,11 +50,11 @@ class CommentMessageHandler implements MessageHandlerInterface {
         $this->commentRepository = $commentRepository;
         $this->bus = $bus;
         $this->workflow = $commentStateMachine;
-        $this->mailer = $mailer;
+        $this->notifier = $notifier;
         $this->imageOptimizer = $imageOptimizer;
-        $this->adminEmail = $adminEmail;
         $this->photoDir = $photoDir;
         $this->logger = $logger;
+        $this->notifier = $notifier;
     }
 
     public function __invoke(CommentMessage $message)
@@ -79,12 +76,9 @@ class CommentMessageHandler implements MessageHandlerInterface {
             $this->entityManager->flush();
 
             $this->bus->dispatch($message);
-            } elseif ($this->workflow->can($comment, 'optimize')) {
-            if ($comment->getPhotoFilename()) {
-                $this->imageOptimizer->resize($this->photoDir.'/'.$comment->getPhotoFilename());
-            }
-            $this->workflow->apply($comment, 'optimize');
-            $this->entityManager->flush();
+        } elseif ($this->workflow->can($comment, 'optimize')) {
+            $notification = new CommentReviewNotification($comment, $message->getReviewUrl());
+            $this->notifier->send($notification, ...$this->notifier->getAdminRecipients());
         } elseif ($this->logger) {
             $this->logger->debug('Dropping comment message', ['comment' => $comment->getId(), 'state' => $comment->getState()]);
         }

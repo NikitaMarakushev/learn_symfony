@@ -1,3 +1,5 @@
+!!! LIST OF COMMANDS: https://symfony.com/doc/current/console.html
+
 1) show project workflow
 - symfony console workflow:dump comment | dot -Tpng -o workflow.png
 
@@ -6,3 +8,9 @@
 
 3) force run CLI command:
 - symfony cron comment_cleanup
+
+4) open in web browser project:
+- symfony local:open
+
+5) set slack DSN:
+- symfony console secrets:set SLACK_DSN
