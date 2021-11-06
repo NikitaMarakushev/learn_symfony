@@ -14,6 +14,9 @@
     "egulias/email-validator": {
         "version": "3.1.2"
     },
+    "imagine/imagine": {
+        "version": "1.2.4"
+    },
     "lorenzo/pinky": {
         "version": "1.0.5"
     },

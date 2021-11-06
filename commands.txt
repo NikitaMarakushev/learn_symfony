@@ -1,0 +1,2 @@
+1) show project workflow
+- symfony console workflow:dump comment | dot -Tpng -o workflow.png
