@@ -54,6 +54,12 @@ class Admin implements UserInterface
         return (string) $this->username;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param string $username
+     * @return self
+     */
     public function setUsername(string $username): self
     {
         $this->username = $username;
@@ -115,11 +121,22 @@ class Admin implements UserInterface
         // $this->plainPassword = null;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @return string|null
+     */
     public function getEmail(): ?string
     {
         return $this->email;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @param string|null $email
+     * @return self
+     */
     public function setEmail(?string $email): self
     {
         $this->email = $email;
@@ -127,6 +144,11 @@ class Admin implements UserInterface
         return $this;
     }
 
+    /**
+     * Undocumented function
+     *
+     * @return string
+     */
     public function __toString()
     {
         return $this->username;
