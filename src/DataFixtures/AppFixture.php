@@ -13,11 +13,18 @@ class AppFixtures extends Fixture
 {
     private $encoderFactory;
 
+    /**
+     * @param EncoderFactoryInterface $encoderFactory
+     */
     public function __construct(EncoderFactoryInterface $encoderFactory)
     {
         $this->encoderFactory = $encoderFactory;
     }
 
+    /**
+     * @param ObjectManager $manager
+     * @return void
+     */
     public function load(ObjectManager $manager)
     {
         $amsterdam = new Conference();

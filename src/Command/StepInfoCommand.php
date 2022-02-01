@@ -10,16 +10,28 @@ use Symfony\Contracts\Cache\CacheInterface;
 
 class StepInfoCommand extends Command
 {
+    /**
+     * @var string
+     */
     protected static $defaultName = 'app:step:info';
 
     private $cache;
 
+    /**
+     * @param CacheInterface $cache
+     */
     public function __construct(CacheInterface $cache)
     {
         $this->cache = $cache;
         parent::__construct();
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int
+     * @throws \Psr\Cache\InvalidArgumentException
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $step = $this->cache->get('app.current_step', function ($item) {
@@ -29,7 +41,7 @@ class StepInfoCommand extends Command
 
             return $process->getOutput();
         });
-        
+
         $output->writeln($step);
 
         return 0;

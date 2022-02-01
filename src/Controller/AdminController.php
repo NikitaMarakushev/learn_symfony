@@ -23,6 +23,11 @@ class AdminController extends AbstractController
     private $entityManager;
     private $bus;
 
+    /**
+     * @param Environment $twig
+     * @param EntityManagerInterface $entityManager
+     * @param MessageBusInterface $bus
+     */
     public function __construct(Environment $twig, EntityManagerInterface $entityManager, MessageBusInterface $bus)
     {
         $this->twig = $twig;
@@ -30,6 +35,12 @@ class AdminController extends AbstractController
         $this->bus = $bus;
     }
 
+    /**
+     * @param Request $request
+     * @param Comment $comment
+     * @param Registry $registry
+     * @return Response
+     */
     #[Route('/comment/review/{id}', name: 'review_comment')]
     public function reviewComment(Request $request, Comment $comment, Registry $registry): Response
     {
@@ -58,6 +69,12 @@ class AdminController extends AbstractController
         ]);
     }
 
+    /**
+     * @param KernelInterface $kernel
+     * @param Request $request
+     * @param string $uri
+     * @return Response
+     */
     #[Route('/http-cache/{uri<.*>}', methods: ['PURGE'])]
     public function purgeHttpCache(KernelInterface $kernel, Request $request, string $uri): Response
     {

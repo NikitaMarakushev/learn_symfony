@@ -13,8 +13,14 @@ class CommentCleanupCommand extends Command
 {
     private $commentRepository;
 
+    /**
+     * @var string
+     */
     protected static $defaultName = 'app:comment:cleanup';
 
+    /**
+     * @param CommentRepository $commentRepository
+     */
     public function __construct(CommentRepository $commentRepository)
     {
         $this->commentRepository = $commentRepository;
