@@ -1,30 +1,87 @@
-version: '3'
+version: '3.6'
 
 services:
+  app:
+    build:
+      context: docker/app
+      args:
+        PHP_VERSION: "8.1"
+    depends_on:
+      - database
+    networks:
+      learn_symfony_net:
+        aliases:
+            - learn_symf
+
+  nginx:
+    build:
+      context: docker/nginx
+    networks:
+      learn_symfony_net:
+        aliases:
+            - learn-net
+    volumes:
+      - ".:/srv"
+
   database:
     image: postgres:13-alpine
     environment:
       POSTGRES_USER: main
       POSTGRES_PASSWORD: main
       POSTGRES_DB: main
-    ports: [5432]
+    ports:
+      - 5432
+    networks:
+      - learnsymfony
+    volumes:
+      - "db-data:/var/lib/postgresql/data"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-h", "localhost", "-U", "$POSTGRES_USER", "-d", "$POSTGRES_DB"]
+      retries: 10
+      interval: 2s
+      start_period: 3s
 
   mailer:
     image: schickling/mailcatcher
-    ports: [1025, 1080]
+    ports:
+      - 1025:1080
+    restart: unless-stopped
+    networks:
+        - learnsymfony
 
   blackfire:
     image: blackfire/blackfire
     env_file: .env.local
-    ports: [8707]
+    ports:
+      - 8707
+    restart: unless-stopped
+    networks:
+        - learnsymfony
 
   redis:
     image: redis:5-alpine
-    ports: [6379]
+    ports:
+     - 6379
+    restart: unless-stopped
+    networks:
+        - learnsymfony
 
   rabbitmq:
     image: rabbitmq:3.7-management
-    ports: [5672, 15672]
+    ports:
+     - 5672:15672/tcp
+    restart: unless-stopped
+    networks:
+      - learnsymfony
 
 volumes:
   db-data:
+
+networks:
+  learnsymfony:
+  local:
+    driver: bridge
+  learn_symfony_net:
+    external: true
+
+
