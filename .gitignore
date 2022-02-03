@@ -1,3 +1,4 @@
+/public/uploads
 
 ###> symfony/framework-bundle ###
 /.env.local
@@ -5,7 +6,6 @@
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
-/public/uploads
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
@@ -26,8 +26,3 @@
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
-
-###> squizlabs/php_codesniffer ###
-/.phpcs-cache
-/phpcs.xml
-###< squizlabs/php_codesniffer ###

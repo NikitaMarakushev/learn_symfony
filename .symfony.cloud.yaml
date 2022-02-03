@@ -1,0 +1,67 @@
+name: app
+
+type: php:8.0
+
+runtime:
+  extensions:
+    - amqp
+    - redis
+    - blackfire
+    - xsl
+    - pdo_pgsql
+    - apcu
+    - mbstring
+    - sodium
+    - ctype
+    - iconv
+
+
+#variables:
+#    php:
+#        # uncomment on PHP 7.4+
+#        #opcache.preload: /app/config/preload.php
+
+build:
+  flavor: none
+
+disk: 512
+
+relationships:
+  database: "db:postgresql"
+  redis: "rediscache:redis"
+  rabbitmq: "queue:rabbitmq"
+
+web:
+  locations:
+    "/":
+      root: "public"
+      expires: 1h
+      passthru: "/index.php"
+
+
+
+mounts:
+  "/var": { source: local, source_path: var }
+  "/public/uploads": { source: service, service: files, source_path: uploads }
+
+hooks:
+  build: |
+    set -x -e
+    curl -fs https://get.symfony.com/cloud/configurator | (>&2 bash)
+    
+    (>&2 symfony-build)
+  deploy: |
+    set -x -e
+    (>&2 symfony-deploy)
+crons:
+  comment_cleanup:
+    # Cleanup every night at 11.50 pm (UTC).
+    spec: '50 23 * * *'
+    cmd: |
+      if [ "$SYMFONY_BRANCH" = "master" ]; then
+          croncape symfony console app:comment:cleanup
+      fi
+workers:
+  messages:
+    commands:
+      start: symfony console messenger:consume async -vv --time-limit=3600 --memory-limit=128M
