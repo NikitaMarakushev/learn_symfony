@@ -13,21 +13,19 @@ ENV LANG=en_US.UTF-8 \
     COMPOSER_ALLOW_SUPERUSER=1 \
     COMPOSER_NO_INTERACTION=1 \
     COMPOSER_HOME=/opt/composer \
-    PHP_EXTENTIONS="dom libonig-dev iconv posix soap intl bcmath zip gd curl mbstring mysqli pcntl pgsql pdo pdo_pgsql json simplexml session xml ctype pcntl" \
-    PECL_EXTENTIONS="apcu timezonedb uuid xdebug memcached imagick-${IMAGICK_VERSION} rdkafka-${RDKAFKA_VERSION} xlswriter" \
-    PHP_BUILDDEPS="openssl-dev icu-dev libmcrypt-dev pcre-dev libzip-dev curl-dev libxml2-dev postgresql-dev gcc g++ libtool make binutils mysql-dev imagemagick-dev libmemcached-dev cyrus-sasl-dev" \
-    PHP_RUNDEPS="util-linux-dev pcre-dev zlib-dev libzip-dev libgd libpng-dev libpq icu-libs libmcrypt autoconf libmemcached-libs imagemagick librdkafka-dev" \
-    COMMON_PACKAGES="git bash bash-completion nano vim curl coreutils fcgi unzip tzdata net-tools openssh-client openssh-keygen openssh-keysign libmemcached ca-certificates openrc sudo"
+    PHP_EXTENTIONS="posix soap intl bcmath zip curl pgsql simplexml session xml ctype" \
+    PECL_EXTENTIONS="uuid xdebug xlswriter" \
+    PHP_BUILDDEPS="icu-dev libmcrypt-dev pcre-dev libzip-dev curl-dev libxml2-dev postgresql-dev gcc g++ make binutils" \
+    PHP_RUNDEPS="libzip-dev libpng-dev libpq icu-libs libmcrypt autoconf" \
+    COMMON_PACKAGES="git bash bash-completion nano curl coreutils fcgi unzip tzdata net-tools openssh-client openssh-keygen openssh-keysign ca-certificates openrc sudo"
 
 RUN apk add --no-cache ${COMMON_PACKAGES} \
     && ln -fs /usr/share/zoneinfo/${PHP_INI_TIMEZONE} /etc/localtime \
     && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 RUN apk add --update --no-cache --wait 10 \
-  libstdc++ libx11 libxrender libxext libssl1.1 freetype ttf-dejavu ttf-droid ttf-liberation \
+  libstdc++ libx11 libxrender libxext freetype \
 && apk add --update --no-cache --virtual .build-deps \
-\
-&& fc-cache -f \
 \
 && rm -rf /tmp/* \
 && apk del .build-deps
@@ -45,7 +43,7 @@ RUN apk add --no-cache ${PHP_RUNDEPS} \
     done \
     && apk del .php_builddeps
 
-COPY --from=composer:1.9.0 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2.2.5 /usr/bin/composer /usr/bin/composer
 
 ARG USER_GID=1000
 ARG USER_UID=1000
@@ -67,20 +65,9 @@ COPY conf.d/                        /usr/local/etc/php/conf.d
 COPY php-fpm-${PHP_VERSION}.conf    /usr/local/etc/php-fpm.conf
 COPY php-fpm.d/                     /usr/local/etc/php-fpm.d/
 
-COPY --chown=app:app .ssh/ /home/app/.ssh/
-RUN chmod 0700 /home/app/.ssh \
-  && ssh-keyscan -t rsa gitlab.com > /home/app/.ssh/known_hosts \
-  && ssh-keyscan -t rsa github.com >> /home/app/.ssh/known_hosts \
-  && chmod 0600 /home/app/.ssh/deploy.id_rsa /home/app/.ssh/known_hosts \
-  && chmod 0644 /home/app/.ssh/deploy.id_rsa.pub /home/app/.ssh/config
-
-RUN composer global require hirak/prestissimo
-
 EXPOSE 8000
 WORKDIR /srv
 RUN chown -R app:app /srv
 USER app
 
-COPY --from=surnet/alpine-wkhtmltopdf:3.9-0.12.5-small /bin/wkhtmltopdf /usr/local/bin/wkhtmltopdf
-
-CMD bash -c "cp /home/app/parameters.yml /srv/app/config/; composer install; php-fpm"
+CMD bash -c "composer install; php-fpm"
